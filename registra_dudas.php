@@ -34,8 +34,6 @@ $correo = $_POST["correo"];
 $modulo = $_POST["modulo"];
 $asunto = $_POST["asunto"];
 $descripcion = $_POST["descripcion"];
- 
-$errores = [];
 
 // Validaciones
 
