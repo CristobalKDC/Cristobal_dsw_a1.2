@@ -19,7 +19,7 @@ function validarModulo($modulo) {
 
 // Función validarasunto
 function validarAsunto($asunto) {
-    return strlen($asunto) <= 50 && !is_numeric($asunto);
+    return strlen($asunto) <= 50 && !preg_match('/\d/', $asunto);
 }
 
 // Función validar descripción
