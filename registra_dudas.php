@@ -4,28 +4,48 @@ $modulosPermitidos = ['Programación', 'Sistemas', 'Redes', 'Base de Datos', 'En
 
 $errores = [];
 
-$correo = $_POST["correo"] ?? '';
-$modulo = $_POST["modulo"] ?? '';
-$asunto = $_POST["asunto"] ?? '';
-$descripcion = $_POST["descripcion"] ?? '';
+$correo = $_POST["correo"];
+$modulo = $_POST["modulo"];
+$asunto = $_POST["asunto"];
+$descripcion = $_POST["descripcion"];
+
+// Función para validar el correo
+function validarCorreo($correo) {
+    return filter_var($correo, FILTER_VALIDATE_EMAIL) !== false;
+}
+
+// Función para validar el módulo
+function validarModulo($modulo, $modulosPermitidos) {
+    return in_array($modulo, $modulosPermitidos);
+}
+
+// Función para validar el asunto
+function validarAsunto($asunto) {
+    return strlen($asunto) <= 50 && !preg_match('/\d/', $asunto);
+}
+
+// Función para validar la descripción
+function validarDescripcion($descripcion) {
+    return strlen($descripcion) <= 300;
+}
 
 // Validar el correo
-if (!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
+if (!validarCorreo($correo)) {
     $errores[] = "El correo no tiene un formato válido.";
 }
 
 // Validar que el módulo sea uno de los permitidos
-if (!in_array($modulo, $modulosPermitidos)) {
+if (!validarModulo($modulo, $modulosPermitidos)) {
     $errores[] = "El módulo seleccionado no es válido.";
 }
 
 // Validar el asunto
-if (strlen($asunto) > 50 || preg_match('/\d/', $asunto)) {
+if (!validarAsunto($asunto)) {
     $errores[] = "El asunto no puede tener más de 50 caracteres ni contener números.";
 }
 
 // Validar la descripción
-if (strlen($descripcion) > 300) {
+if (!validarDescripcion($descripcion)) {
     $errores[] = "La descripción no puede tener más de 300 caracteres.";
 }
 
