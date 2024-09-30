@@ -1,38 +1,11 @@
 <?php
 
-// Función para validar el correo
-function validarCorreo($correo) {
-    return filter_var($correo, FILTER_VALIDATE_EMAIL) !== false;
-}
+require 'validaciones.php';
 
-// Módulos disponibles en 2º DAW almacenados en un array
-// Función para validar el módulo
-function validarModulo($modulo) {
-    $modulosValidos = [
-        "Programación",
-        "Base de Datos",
-        "Sistemas",
-        "Entornos de Desarrollo",
-        "Desarrollo Web"
-    ];
-    return in_array($modulo, $modulosValidos);
+// Verificamos si hay datos enviados
+if ($_SERVER['REQUEST_METHOD'] !== 'POST' && $_SERVER['REQUEST_METHOD'] !== 'GET') {
+    exit("Acceso no autorizado.");
 }
-
-// Función para validar el asunto
-function validarAsunto($asunto) {
-    return strlen($asunto) <= 50 && !is_numeric($asunto);
-}
-
-// Función para validar la descripción
-function validarDescripcion($descripcion) {
-    return strlen($descripcion) <= 300;
-}
-
-// Función para validar los temas seleccionados
-function validarTemas($temas) {
-    return count($temas) >= 1 && count($temas) <= 3;
-}
-
 
 // Recibimos los datos del formulario
 $correo = $_POST["correo"];
@@ -90,10 +63,12 @@ if (!empty($errores)) {
 }
 
 
-// Si no hay errores, guardar los datos en el archivo
-
-// Creamos la cadena de temas
-$temasSeleccionados = '"' . implode(',', $temas) . '"'; 
+// Proteger Contra Ataques XSS
+$correo = htmlspecialchars($correo);
+$modulo = htmlspecialchars($modulo);
+$asunto = htmlspecialchars($asunto);
+$descripcion = htmlspecialchars($descripcion);
+$temasSeleccionados = '"' . implode(',', array_map('htmlspecialchars', $temas)) . '"'; 
 
 // Crear la línea en formato CSV
 $linea = "\"$correo\";\"$modulo\";\"$asunto\";\"$descripcion\";$temasSeleccionados\n";
